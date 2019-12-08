@@ -6,6 +6,7 @@ import re
 from datetime import datetime
 
 from DealRegRow import DealRegRow
+from DealRegdb import updateDealRegTableWithRows
 
 #region Variables
 #endregion
@@ -193,13 +194,19 @@ def main():
                     print(f'\n\nError Found: Row {index} of {fileName} is not valid and will not be added to the database.\n')
                     print(ex)
                 #Don't want to go through all lines in file right now so break after 10 lines
-                if index > 19 :
-                    break
+                #if index > 19 :
+                    #break
 
         for singleRow in tableRows:
             attrs = vars(singleRow)
             print('\n')
             print(', '.join("%s: %s" % item for item in attrs.items()))
+        try:
+            updateDealRegTableWithRows(tableRows)
+        except Exception as ex:
+            print('\nError updating database with table data:\n')
+            print(ex)
+
 
 
 
