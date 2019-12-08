@@ -1,7 +1,7 @@
 
 class DealRegRow:
 
-  def _init_(self, verifiedRow):
+  def __init__(self, verifiedRow):
     self.partNum = verifiedRow['PART_NUM']
     self.dealRegGroup = verifiedRow['DEAL_REG_GROUP']
     self.startDate = verifiedRow['START_DATE']

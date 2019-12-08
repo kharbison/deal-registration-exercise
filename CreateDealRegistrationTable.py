@@ -4,7 +4,7 @@ import argparse
 import csv
 import re
 from datetime import datetime
-import DealRegRow
+from DealRegRow import DealRegRow
 
 #region Variables
 RowsToAdd = []
@@ -20,27 +20,38 @@ def parse_args():
 
 #region Funtions
 def verifyPNFormat(partNumber):
+  # Part number should look something like SWPT000001
   result = re.fullmatch("^[A-Z]+PT[0-9]+$", partNumber)
+
   if result == None:
-    raise ValueError()
+    # The Part Num did not match the expected regex pattern. Throw Error and do not add item to the Database
+    raise ValueError(f'PartNumber does not fit the specified format of *PT#: {partNumber}')
 
-def verifyDelRegGroup(regGroup):
+def verifyDealRegGroup(regGroup):
+  # There is no common pattern to the Deal Registration Groups so verify that it has a value that is not an empty string
   if regGroup == '':
-    raise ValueError()
+    # Group is an empty string so throw error and do not add it to the Database
+    raise ValueError(f'Deal Registration Group cannot be empty.')
 
-def parseDate(dateToParse):
+def parseDate(dateName, dateToParse):
+  # Check that the date given matches one of the excepted formats. Other formats will not be accepted at this time to
+  # reduce parsing confusion.
   for dtFmt in ("%m/%d/%Y %I:%M:%S %p","%m/%d/%y %I:%M:%S %p", "%Y-%m-%d-%H.%M.%S.%f", "%m/%d/%y", "%m/%d/%Y"):
     try:
       return datetime.strptime(dateToParse, dtFmt)
     except ValueError:
       pass
 
-  raise ValueError()
+  # The date string given did not match any of the valid formats throw error and do not add row to the database.
+  raise ValueError(f'Unable to parse {dateName} into dateTime value: {dateToParse}')
 
 def parseActiveFlag(activeFlag):
+  #Case does not matter so change the flag value to upper case before verifying
   flag = activeFlag.upper()
+
   if not flag == 'Y' and not flag == 'N':
-    raise ValueError()
+    # Flag is not in the correct format throw error and do not add row to database
+    raise ValueError(f'Active Flag value is not in the correct format of Y or N: {activeFlag}')
   else:
     return flag
 
@@ -52,20 +63,14 @@ def verifyAndParseRow(rowToParse):
 
     if columnName == 'PART_NUM':
       # Verify part number starts with prefix and has PT# afterwards
-      try:
-        verifyPNFormat(value)
-        parsedRow[columnName] = value
-        print(f'{column} is valid')
-      except ValueError:
-        raise ValueError(f'PartNumber does not fit the specified format of *PT#: {value}')
+      verifyPNFormat(value)
+      parsedRow[columnName] = value
+      #print(f'{column} is valid')
 
     elif columnName == 'DEAL_REG_GROUP':
-      try:
-        verifyDelRegGroup(value)
-        parsedRow[columnName] = value
-        print(f'{column} is valid')
-      except ValueError:
-        raise ValueError(f'Deal Registration Group cannot be empty.')
+      verifyDealRegGroup(value)
+      parsedRow[columnName] = value
+      #print(f'{column} is valid')
 
     elif 'DATE' in columnName:
       if 'END' in columnName:
@@ -78,23 +83,70 @@ def verifyAndParseRow(rowToParse):
               value = str.replace(value, '99', '9999')
 
       # Attempt Date Time Parse
-      try:
-        parsedRow[columnName] = parseDate(value)
-        print(f'{column} is valid and parsed to {parsedRow[columnName]}')
-      except ValueError:
-        raise ValueError(f'Unable to parse {column} into dateTime value: {value}')
+      parsedRow[columnName] = parseDate(column, value)
+      #print(f'{column} is valid and parsed to {parsedRow[columnName]}')
 
     elif columnName == "ACTIVE_FLAG":
-      try:
-        parsedRow[columnName] = parseActiveFlag(value)
-        print(f'{column} is valid and parsed to {parsedRow[columnName]}')
-      except ValueError:
-        raise ValueError(f'Active Flag value is not in the correct format of Y or N: {value}')
+      parsedRow[columnName] = parseActiveFlag(value)
+      #print(f'{column} is valid and parsed to {parsedRow[columnName]}')
 
     else:
       pass
 
+  # Compare dates to check validity of the dates given
+  start = parsedRow['START_DATE']
+  end = parsedRow['END_DATE']
+  if start > end:
+    raise ValueError(f'The start date was determined to be greater than the end date. This format is invalid. Start Date: {start}  End Date: {end}')
+
+  add = parsedRow['ADD_DATE']
+  mod = parsedRow['MODIFIED_DATE']
+  if  add > mod:
+    raise ValueError(f'The add date was determined to be greater than the modified date. This format is invalid. Add Date: {add}  Modified Date: {mod}')
+
+  # Row is valid and can be returned to be added.
   return parsedRow
+
+def checkNewRowNeeded(oldRow, newRow):
+  if not oldRow.endDate == newRow.endDate:
+    return oldRow.endDate < newRow.endDate
+  else:
+    if not oldRow.addDate == newRow.addDate:
+      return oldRow.addDate < newRow.addDate
+    else:
+      if oldRow.activeFlag == newRow.activeFlag:
+        if not oldRow.modDate == newRow.modDate:
+          return oldRow.modDate < newRow.modDate
+        else:
+          raise ValueError(f'Unable to determine validity of duplicate row for part number {newRow.partNum}. Both rows only differ in the Deal Reg Group they are assigned to.')
+      else:
+        return oldRow.activeFlag == 'N' and newRow.activeFlag == 'Y'
+
+def addNewRow(validRow):
+  global RowsToAdd
+
+  newRow = DealRegRow(validRow)
+
+  # If a duplicate exists only one should be found because this check is preformed each time
+  # a new row needs to be added
+  duplicateRow = next((item for item in RowsToAdd if item.partNum == newRow.partNum), None)
+
+  if duplicateRow == None:
+    RowsToAdd.append(newRow)
+  else:
+    if duplicateRow.areEqual(newRow):
+      # New row does not need to be added because an exact match already exists
+      pass
+    else:
+      newRowNeeded = checkNewRowNeeded(duplicateRow, newRow)
+
+      if newRowNeeded:
+        #Remove old Row first then add new one
+        RowsToAdd.remove(duplicateRow)
+        RowsToAdd.append(newRow)
+      else:
+        # New row is not needed and old row needs to stay
+        pass
 
 
 #endregion
@@ -102,18 +154,25 @@ def verifyAndParseRow(rowToParse):
 #region Main
 #Check received args first
 args = parse_args()
-print(args)
+#print(args)
 
 for fileName in args.csvFiles:
+  RowsToAdd.clear()
   with open(fileName, "r", encoding='utf-8-sig') as csvfile:
     reader = csv.DictReader(csvfile)
-    index = 0
-    for row in reader:
-      parsedRow = verifyAndParseRow(row)
-      print(parsedRow)
-      index = index + 1
+    for index, row in enumerate(reader):
+      try:
+        parsedRow = verifyAndParseRow(row)
+        addNewRow(parsedRow)
+      except ValueError as ex:
+        print(f'\n\nError Found: Row {index} of {fileName} is not valid and will not be added to the database.\n')
+        print(ex)
       #Don't want to go through all lines in file right now so break after 10 lines
-      if index > 9 :
+      if index > 19 :
         break
 
+  for singleRow in RowsToAdd:
+    attrs = vars(singleRow)
+    print('\n')
+    print(', '.join("%s: %s" % item for item in attrs.items()))
 #endregion
