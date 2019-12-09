@@ -9,9 +9,15 @@ class DealRegRow:
         self.addDate = verifiedRow['ADD_DATE']
         self.modDate = verifiedRow['MODIFIED_DATE']
         self.activeFlag = 'N/A'
+        self.partType = 'Unknown'
 
         if 'ACTIVE_FLAG' in verifiedRow:
             self.activeFlag = verifiedRow['ACTIVE_FLAG']
+
+        if 'SWPT' in self.partNum.upper():
+            self.partType = 'SW'
+        elif 'SAPT' in self.partNum.upper():
+            self.partType = 'SaaS'
 
     def areEqual(self, rowToCompare):
         return (self.partNum == rowToCompare.partNum and

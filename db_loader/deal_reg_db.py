@@ -21,12 +21,14 @@ class DealRegTable(Base):
     deal_reg_group = Column(String)
     active_flag = Column(String)
     end_date = Column(DateTime)
+    part_type = Column(String)
 
     def __init__ (self, rowToAdd):
         self.part_num = rowToAdd.partNum
         self.deal_reg_group = rowToAdd.dealRegGroup
         self.active_flag = rowToAdd.activeFlag
         self.end_date = rowToAdd.endDate
+        self.part_type = rowToAdd.partType
 #endregion
 
 #region functions

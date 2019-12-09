@@ -5,8 +5,8 @@ import csv
 import re
 from datetime import datetime
 
-from DealRegRow import DealRegRow
-from DealRegdb import updateDealRegTableWithRows
+from deal_reg_row import DealRegRow
+from deal_reg_db import updateDealRegTableWithRows
 
 #region Variables
 #endregion
@@ -197,10 +197,10 @@ def main():
                 #if index > 19 :
                     #break
 
-        for singleRow in tableRows:
-            attrs = vars(singleRow)
-            print('\n')
-            print(', '.join("%s: %s" % item for item in attrs.items()))
+        #for singleRow in tableRows:
+           # attrs = vars(singleRow)
+           # print('\n')
+           # print(', '.join("%s: %s" % item for item in attrs.items()))
         try:
             updateDealRegTableWithRows(tableRows)
         except Exception as ex:
