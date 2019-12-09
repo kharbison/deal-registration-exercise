@@ -1,0 +1,91 @@
+<template>
+  <div class='searchForm'>
+    <h3>Deal Registration Group Mapping</h3>
+    <br>
+    <div>
+      <cv-form>
+        <cv-text-input v-model='partNum'
+          label="Part Number Search"
+          helper-text="Enter a part number to get the associated Deal Registration Group"
+          placeholder="Part Number">
+        </cv-text-input>
+        <br>
+        <cv-button v-on:click="getRegGroup">Search</cv-button>
+      </cv-form>
+    </div>
+    <br>
+    <div class="searchResults">
+      <cv-data-table
+        :columns="columns" :data="searchResults"   ref="table"></cv-data-table>
+      <br>
+      <cv-button v-on:click="clearHistory">Clear History</cv-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import { CvForm, CvTextInput, CvButton, CvDataTable } from '@carbon/vue'
+
+const axios = require('axios')
+
+export default {
+  name: 'PartNumberSearch',
+  components: {
+    CvForm,
+    CvTextInput,
+    CvButton,
+    CvDataTable
+  },
+  data () {
+    return {
+      columns: [
+        'Part Number',
+        'Deal Registratioon Group'
+      ],
+      searchResults: [],
+      partNum: null,
+      response: null
+    }
+  },
+  methods: {
+    getRegGroup: function () {
+      axios
+        .get(`http://localhost:3000/deal-registration/mapping/${encodeURIComponent(this.partNum)}`)
+        .then(res => {
+          this.response = res.data
+          let newResult = [ this.response.part_num, this.response.deal_reg_group ]
+          this.searchResults.unshift(newResult)
+        })
+        .catch((err) => {
+          if (err) {
+            let errorMsg = err.response.data.errMsg
+            alert(`Error Trying to get part number ${this.partNum}: ${errorMsg}`)
+          }
+        })
+    },
+    clearHistory: function () {
+      this.searchResults = []
+    }
+  }
+}
+</script>
+
+<style scoped>
+.searchForm {
+  font-size: 15px;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+  max-width: 50%;
+  align-self: center;
+}
+
+h3 {
+  margin-bottom: 20px;
+}
+
+.searchResults {
+  margin-top: 40px;
+}
+</style>
