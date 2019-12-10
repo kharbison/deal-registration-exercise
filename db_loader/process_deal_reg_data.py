@@ -25,6 +25,9 @@ def verifyPNFormat(partNumber):
     Throw error if it does not match this format to keep
     row from being added to database"""
 
+    if not type(partNumber) is str:
+        raise TypeError(f'{partNumber} should be a string but is not.')
+
     result = re.fullmatch("^[A-Z]+PT[0-9]+$", partNumber)
 
     if result == None:
@@ -36,6 +39,9 @@ def verifyDealRegGroup(regGroup):
     so verify that it has a value that is not an empty string.
     Throw an error if it is '' so the row does not get added to the database"""
 
+    if not type(regGroup) is str:
+        raise TypeError(f'{regGroup} should be a string but is not.')
+
     if regGroup == '':
         raise ValueError(f'Deal Registration Group cannot be empty.')
 
@@ -45,6 +51,9 @@ def parseDate(dateName, dateToParse):
     Other formats will not be accepted at this time to reduce parsing confusion.
     If no formats match, throw and error to keep the row from being added to the database.
     Return: parsed datetime object"""
+
+    if not type(dateToParse) is str:
+        raise TypeError(f'{dateToParse} should be a string but is not.')
 
     for dtFmt in ("%m/%d/%Y %I:%M:%S %p","%m/%d/%y %I:%M:%S %p", "%Y-%m-%d-%H.%M.%S.%f", "%m/%d/%y", "%m/%d/%Y"):
         try:
@@ -60,6 +69,9 @@ def parseActiveFlag(activeFlag):
     Throw and error if it is not to keep the row from being added
     to the database.
     Return: case corrected Flag value"""
+
+    if not type(activeFlag) is str:
+        raise TypeError(f'{activeFlag} should be a string but is not.')
 
     #Case does not matter so change the flag value to upper case before verifying
     flag = activeFlag.upper()
@@ -193,8 +205,17 @@ def main():
                 except ValueError as ex:
                     print(f'\n\nError Found: Row {index} of {fileName} is not valid and will not be added to the database.\n')
                     print(ex)
+                except TypeError as ex:
+                    print(f'\n\nError Found: Row {index} of {fileName} has a column value that is not of the correct type.\n'
+                    + 'This row will not be added to the database.')
+                    print(ex)
+                except Exception as ex:
+                    print('Unexpected Error Found: Error found while parsing row.')
+                    print(ex)
                 #Don't want to go through all lines in file right now so break after 10 lines
-                #if index > 19 :
+                #print(row)
+                #print(parsedRow)
+                #if index > 10 :
                     #break
 
         #for singleRow in tableRows:
