@@ -67,6 +67,10 @@ def updateDealRegTableWithRows(allTableRows):
     session = Session()
 
     try:
+        # allTableRows shouldn't be empty, throw error if it is
+        if len(allTableRows) == 0:
+            raise IndexError('Error: Input does not contain any rows to modify the database with.')
+
         #Get part number type prefix to determine if any already exist in the table
         queryPrefix = re.match( "^[A-Z]+PT", allTableRows[0].partNum)
 
@@ -101,13 +105,13 @@ def updateDealRegTableWithRows(allTableRows):
                 print(f'{len(newTableRows)} added to the Deal Registration table.')
 
             else:
-                # It is unlike that this exception will be thrown but it is here just in case
+                # It is unlikely that this exception will be thrown but it is here just in case
                 raise ValueError('Unable to add updated part numbers to Deal registration '
                                 + 'table because no new rows were able to be created.\n\n'
                                 + 'No modifications were done to the database.')
 
         else:
-            # The likelyhood of the row data received not matching to the prefix regex is extremely unlikly but
+            # The likelyhood of the row data received not matching to the prefix regex is extremely unlikely but
             # we shouldn't try to modify the table if bad data is received
             raise ValueError('Invalid table data trying to be added to the Deal Registration database table.')
     except Exception as ex:
