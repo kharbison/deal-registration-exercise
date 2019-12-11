@@ -13,7 +13,7 @@ from deal_reg_db import updateDealRegTableWithRows
 
 #region Define Arg Parser
 def parse_args():
-    argParser = argparse.ArgumentParser(description='Insert/Update Data Registration Table database with give .csv files.')
+    argParser = argparse.ArgumentParser(description='Insert/Update Data Registration Table database with given .csv files.')
     argParser.add_argument('csvFiles', nargs='+', type=str, help='csv file(s) to update or add to a database')
     receivedArgs = argParser.parse_args()
     return receivedArgs

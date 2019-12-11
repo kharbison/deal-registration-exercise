@@ -1,6 +1,9 @@
 import pytest
+import os
 from datetime import datetime
 from collections import OrderedDict
+
+os.environ['DEAL_REG_DB_URL'] = 'postgresql://@localhost:5432/DealRegDB'
 
 import process_deal_reg_data
 import deal_reg_row

@@ -4,6 +4,16 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+if (!('DEAL_REG_DB_URL' in process.env)) {
+  console.log("Error: DEAL_REG_DB_URL environment error has not been set.")
+  process.exit(1)
+}
+else if (process.env.DEAL_REG_DB_URL == '') {
+  console.log('Error: The DEAL_REG_DB_URL environment cannot be and empty string.')
+  process.exit(1)
+}
+
+
 // Load routes
 var dealReg = require('./routers/deal-registration')
 

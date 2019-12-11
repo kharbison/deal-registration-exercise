@@ -1,4 +1,6 @@
 import re
+import os
+import sys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -6,8 +8,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy_utils import database_exists, create_database
 
-#region Global Variables
-engine = create_engine('postgresql://@localhost:5432/DealRegDB')
+#region Global
+if not 'DEAL_REG_DB_URL' in os.environ:
+    print('Error: Environment variable DEAL_REG_DB_URL does not exist. \n'
+           + 'Set this variable to the PostgreSQL DB path so this program can modify the database.')
+    sys.exit()
+elif os.getenv('DEAL_REG_DB_URL') == '':
+    print('Error: Environment Variable DEAL_REG_DB_URL cannot be an empty string.\n'
+          + 'Set this variable to the PostgresSQL DB path so this program can modify the database.')
+    sys.exit()
+
+engine = create_engine(os.getenv('DEAL_REG_DB_URL'))
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 #endregion

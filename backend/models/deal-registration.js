@@ -1,7 +1,9 @@
 'use strict'
 
 const pgp = require('pg-promise')()
-const db = pgp('postgresql://@localhost:5432/DealRegDB')
+
+// Environment variable is checked before loading this code
+const db = pgp(process.env.DEAL_REG_DB_URL)
 
 function getRegEntry(pn, cb) {
   let pattern = new RegExp('^[A-Z]+PT[0-9]+$')
@@ -9,6 +11,7 @@ function getRegEntry(pn, cb) {
   let matchResult = pn.match(pattern)
 
   if (matchResult !== null) {
+    // If DB is not running 500 error will be propogated.
     db.any('SELECT * FROM tbl_deal_reg WHERE part_num = $1', pn)
     .then(result => {
       //console.log(result)
