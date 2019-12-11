@@ -2,9 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Backend for part number lookup of Deal Registration Database",
-  "main": "app.js",
+  "main": "./server/app.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node server/app.js"
   },
   "author": "Kate Harbison",
   "license": "UNLICENSED",

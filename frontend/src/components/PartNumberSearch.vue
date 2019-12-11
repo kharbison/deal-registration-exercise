@@ -10,15 +10,15 @@
           placeholder="Part Number">
         </cv-text-input>
         <br>
-        <cv-button v-on:click="getRegGroup">Search</cv-button>
+        <cv-button type="button" v-on:click="getRegGroup">Search</cv-button>
       </cv-form>
     </div>
     <br>
     <div class="searchResults">
       <cv-data-table
-        :columns="columns" :data="searchResults"   ref="table"></cv-data-table>
+        :columns="columns" :data="searchResults"  ref="table"></cv-data-table>
       <br>
-      <cv-button v-on:click="clearHistory">Clear History</cv-button>
+      <cv-button type="button" v-on:click="clearHistory">Clear History</cv-button>
     </div>
   </div>
 </template>
@@ -43,18 +43,17 @@ export default {
         'Deal Registratioon Group'
       ],
       searchResults: [],
-      partNum: null,
-      response: null
+      partNum: null
     }
   },
   methods: {
     getRegGroup: function () {
+      console.log('Making call to backend')
       axios
         .get(`http://localhost:3000/deal-registration/mapping/${encodeURIComponent(this.partNum)}`)
         .then(res => {
-          this.response = res.data
-          let newResult = [ this.response.part_num, this.response.deal_reg_group ]
-          this.searchResults.unshift(newResult)
+          console.log(res.data)
+          this.searchResults.unshift([ res.data.part_num, res.data.deal_reg_group ])
         })
         .catch((err) => {
           if (err) {

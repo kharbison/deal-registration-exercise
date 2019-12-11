@@ -1,7 +1,6 @@
 'use strict'
 
 const pgp = require('pg-promise')()
-
 // Environment variable is checked before loading this code
 const db = pgp(process.env.DEAL_REG_DB_URL)
 
@@ -53,5 +52,6 @@ function getRegEntry(pn, cb) {
 }
 
 module.exports = {
-  getRegEntry
+  getRegEntry,
+  db
 }
