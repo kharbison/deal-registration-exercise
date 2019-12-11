@@ -48,11 +48,9 @@ export default {
   },
   methods: {
     getRegGroup: function () {
-      console.log('Making call to backend')
       axios
         .get(`http://localhost:3000/deal-registration/mapping/${encodeURIComponent(this.partNum)}`)
         .then(res => {
-          console.log(res.data)
           this.searchResults.unshift([ res.data.part_num, res.data.deal_reg_group ])
         })
         .catch((err) => {
