@@ -15,6 +15,6 @@ COPY . .
 # expose port
 EXPOSE 3000
 
-ENV DEAL_REG_DB_URL=postgresql://@localhost:5432/DealRegDB
+ENV DEAL_REG_DB_URL=postgresql://postgres@postgres:5432/DealRegDB
 
 CMD ["npm", "start"]
