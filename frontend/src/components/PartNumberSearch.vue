@@ -4,7 +4,8 @@
     <br>
     <div>
       <cv-form>
-        <cv-text-input v-model='partNum'
+        <cv-text-input
+          v-model='partNum'
           label="Part Number Search"
           helper-text="Enter a part number to get the associated Deal Registration Group"
           placeholder="Part Number">
@@ -14,11 +15,14 @@
       </cv-form>
     </div>
     <br>
-    <div class="searchResults">
+    <div v-if="searchResults.length > 0" class="searchResults">
       <cv-data-table
         :columns="columns" :data="searchResults"  ref="table"></cv-data-table>
       <br>
       <cv-button type="button" v-on:click="clearHistory">Clear History</cv-button>
+    </div>
+    <div v-else class="noResults">
+      <h5>No Results To Display</h5>
     </div>
   </div>
 </template>
@@ -82,7 +86,8 @@ h3 {
   margin-bottom: 20px;
 }
 
-.searchResults {
+.searchResults, .noResults {
   margin-top: 40px;
 }
+
 </style>
