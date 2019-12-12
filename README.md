@@ -1,1 +1,82 @@
 # deal-registration-exercise
+
+For a detailed description of the application please see the [Design Doc](https://github.com/kharbison/deal-registration-exercise/blob/master/docs/design_doc.md).
+
+## Pre-requisites
+- [Python v3.6+](https://www.python.org/downloads/)
+- [Node.js v12](https://nodejs.org/en/)
+- [Docker](https://www.docker.com)
+- [PostgreSQL v12 (_optional_)](https://www.postgresql.org)
+    * Only necessary if not running containerized postgresql image
+
+## Installation
+1. Clone, fork, or download the repository to get the application code.
+
+    ```
+    git clone git@github.com:kharbison/deal-registration-exercise.git
+    cd deal-registration-exercise
+    ```
+
+2. Run script to install local depencies
+
+    ```
+    ./scripts/local_setup.sh
+    ```
+
+## Deployment
+Deploying the application will start docker containers of the frontend, backend, and PostgreSQL database. Before being able to parse any CSV files and add the tables to the database, these containers will need to be started so that the PostgreSQL server is active. Building and starting the containers has all been handled in a single script that can easily be run.
+
+```
+./scripts/deploy.sh
+```
+
+Note: The PostgreSQL container connects to a volume so all data should persist through stopping and starting the containers.
+
+## Populate Database
+The PostgreSQL url is accepted dynamically so that the `db-loader` can be run with other database servers if necessary. To run the `db-loader` with the containers started use the cmds below.
+
+1. Set/Create an environment variable named `DEAL_REG_DB_URL` to the PostgreSQL URL. For example the below cmd will set this variable to the URL of the Postgres server if you are running the container locally.
+
+    ```
+    export DEAL_REG_DB_URL=postgresql://postgres@localhost:5432/DealRegDB
+    ```
+    If you decide to run the containers at another location, you will be responsible for setting the correct username, password, and host name. `DealRegDB` is the name of the database so your URL should always have this value at the end.
+
+    Note: For simplicity, it is reccomended that you run the containers locally if possible.
+
+2. Once the PostgreSQL URL is set, run the `db-loader` cmd with the CSV file(s) as arguments.
+
+    ```
+    db-loader *.csv
+    ```
+
+To update the database at any point, simply run this cmd again with the new CSV files(s).
+
+## Usage
+
+To get the corresponding Deal Registration Group of a specified part number, navigate to the URL at which the containers are being served. You shoul be connecting to port 8080.
+
+For Example, if the containers are running locally, the web page would be located at http://localhost:8080.
+
+Once the page is loaded, simply input a part number and select search to get the corresponding Deal Registration Group of a part number in the database.
+
+# Testing
+
+Tests are set up for the `db-loader` and backend code. To run these tests, you will need to have the containers deployed locally and run the test script.
+
+```
+./scripts/test.sh
+```
+
+Note: `local_setup.sh` is required to be executed before the `test.sh` script can run.
+
+The tests currently only support running with a localized PostgreSQL container but the URLS can be changed in the tests themselves if absolutely necessary.
+
+
+# Stopping Deployed Containers
+
+Once you have finished executing the app, all containers can be stopped by running the `stop.sh` script.
+
+```
+./script/stop.sh
+```
