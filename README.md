@@ -23,6 +23,10 @@ For a detailed description of the application please see the [Design Doc](https:
     ./scripts/local_setup.sh
     ```
 
+    * This script will install all dependencies locally for the backend, frontend, and `db-loader`.
+    * The biggest thing this script does is package the `db-loader` module so that it can be run as a cmd.
+        * See the Populate Database section for details on running this module.
+
 ## Deployment
 Deploying the application will start docker containers of the frontend, backend, and PostgreSQL database. Before being able to parse any CSV files and add the tables to the database, these containers will need to be started so that the PostgreSQL server is active. Building and starting the containers has all been handled in a single script that can easily be run.
 
@@ -88,5 +92,5 @@ The tests currently only support running with a localized PostgreSQL container b
 Once you have finished executing the app, all containers can be stopped by running the `stop.sh` script.
 
 ```
-./script/stop.sh
+./scripts/stop.sh
 ```

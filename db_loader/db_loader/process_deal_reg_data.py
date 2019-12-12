@@ -212,24 +212,12 @@ def main():
                 except Exception as ex:
                     print('Unexpected Error Found: Error found while parsing row.')
                     print(ex)
-                #Don't want to go through all lines in file right now so break after 10 lines
-                #print(row)
-                #print(parsedRow)
-                #if index > 10 :
-                    #break
 
-        #for singleRow in tableRows:
-           # attrs = vars(singleRow)
-           # print('\n')
-           # print(', '.join("%s: %s" % item for item in attrs.items()))
         try:
             updateDealRegTableWithRows(tableRows)
         except Exception as ex:
             print('\nError updating database with table data:\n')
             print(ex)
-
-
-
 
 #endregion
 
