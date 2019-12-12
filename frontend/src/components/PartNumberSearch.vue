@@ -6,6 +6,7 @@
       <cv-form>
         <cv-text-input
           v-model='partNum'
+          v-on:keydown.enter.prevent
           label="Part Number Search"
           helper-text="Enter a part number to get the associated Deal Registration Group"
           placeholder="Part Number">

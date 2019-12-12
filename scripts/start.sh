@@ -5,7 +5,7 @@ docker run -d \
     --rm \
     -p 5432:5432 \
     --network deal_reg_app_net \
-    -v postgres_vol:/var/lib/data \
+    -v postgres_vol:/var/lib/postgresql/data \
     --name postgres \
     postgres:12
 
