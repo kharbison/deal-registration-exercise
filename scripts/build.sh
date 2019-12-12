@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # set up network and volume
 docker network create deal_reg_app_net
