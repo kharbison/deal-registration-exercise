@@ -1,6 +1,6 @@
 # deal-registration-exercise
 
-For a detailed description of the application please see the [Design Doc](https://github.com/kharbison/deal-registration-exercise/blob/master/docs/design_doc.md).
+For a detailed description and overview of the application please see the [Design Doc](https://github.com/kharbison/deal-registration-exercise/blob/master/docs/design_doc.md).
 
 ## Pre-requisites
 - [Python v3.6+](https://www.python.org/downloads/)
@@ -52,9 +52,9 @@ The PostgreSQL URL is accepted dynamically so that the `db-loader` can be run wi
     ```
     export DEAL_REG_DB_URL=postgresql://postgres@localhost:5432/DealRegDB
     ```
-    If you decide to run the containers at another location, you will be responsible for setting the correct username, password, and host name. `DealRegDB` is the name of the database so your URL should always have this value at the end.
+    If you decide to run the containers at another location, you will be responsible for setting the correct username, password, and host name of the URL. `DealRegDB` is the name of the database create/access so your URL should always have this value at the end.
 
-    Note: For simplicity, it is reccomended that you run the containers locally if possible.
+    Note: For simplicity, it is recommended that you run the containers locally if possible.
 
 2. Once the PostgreSQL URL is set, run the `db-loader` cmd with the CSV file(s) as arguments.
 
@@ -62,7 +62,7 @@ The PostgreSQL URL is accepted dynamically so that the `db-loader` can be run wi
     db-loader *.csv
     ```
 
-To update the database at any point, simply run this cmd again with the new CSV files(s).
+To update the database at any point, simply run this cmd again with the new CSV files(s). Make sure to set `DEAL_REG_DB_URL` again if you are in a new terminal session.
 
 Note: The PostgreSQL container connects to a volume so all data should persist through stopping and starting the containers.
 
@@ -70,22 +70,22 @@ Note: The PostgreSQL container connects to a volume so all data should persist t
 
 To get the corresponding Deal Registration Group of a specified part number, navigate to the URL at which the containers are being served. You should be connecting to port 8080.
 
-For Example, if the containers are running locally, the web page would be located at http://localhost:8080.
+For example, if the containers are running locally, the web page would be located at http://localhost:8080.
 
 Once the page is loaded, simply input a part number and select search to get the corresponding Deal Registration Group of a part number in the database.
 
 ## Testing
 
-Tests are set up for the `db-loader` and backend code. To run these tests, you will need to have the containers deployed locally and run the test script.
+Tests are set up for the `db-loader` and backend code.
+Currently the database connection URL in these tests is hardcoded to `postgresql://postgres@localhost:5432/TestDB` (the URL if the postgres container is running locally). If you would like the tests to connect to a different server you will have to change this manually in the tests.
+
+ To run these tests, you will need to have the containers deployed locally and run the test script.
 
 ```
 ./scripts/test.sh
 ```
 
 Note: `local_setup.sh` is required to be executed before the `test.sh` script can run.
-
-The tests currently only support running with a localized PostgreSQL container but the URLS can be changed in the tests themselves if absolutely necessary.
-
 
 ## Stopping Deployed Containers
 

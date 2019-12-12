@@ -8,8 +8,6 @@ from datetime import datetime
 from db_loader.deal_reg_row import DealRegRow
 from db_loader.deal_reg_db import updateDealRegTableWithRows
 
-#region Variables
-#endregion
 
 #region Define Arg Parser
 def parse_args():
@@ -98,12 +96,10 @@ def verifyAndParseRow(rowToParse):
             # Verify part number starts with prefix and has PT# afterwards
             verifyPNFormat(value)
             parsedRow[columnName] = value
-            #print(f'{column} is valid')
 
         elif columnName == 'DEAL_REG_GROUP':
             verifyDealRegGroup(value)
             parsedRow[columnName] = value
-            #print(f'{column} is valid')
 
         elif 'DATE' in columnName:
             # Abreviated year 99 from 9999 will be interpreted as 1999 instead of 9999.
@@ -116,11 +112,9 @@ def verifyAndParseRow(rowToParse):
 
             # Attempt Date Time Parse
             parsedRow[columnName] = parseDate(column, value)
-            #print(f'{column} is valid and parsed to {parsedRow[columnName]}')
 
         elif columnName == "ACTIVE_FLAG":
             parsedRow[columnName] = parseActiveFlag(value)
-            #print(f'{column} is valid and parsed to {parsedRow[columnName]}')
 
         else:
             pass
@@ -192,7 +186,6 @@ def addNewRow(validRow, allRows):
 def main():
     #Check received args first
     args = parse_args()
-    #print(args)
 
     for fileName in args.csvFiles:
         tableRows = []

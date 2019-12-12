@@ -4,7 +4,7 @@ This document is an overview of the design approach taken on this project. See t
 
 ## Requirements
 
-Project overview and requirements can before found [here](https://github.com/CChastang/deal-registration-exercise/issues/1).
+Project overview and requirements can be found [here](https://github.com/CChastang/deal-registration-exercise/issues/1).
 
 #### Special Considerations:
 - The Database should be capable of being updated at any time with new CSV file(s).
@@ -13,12 +13,12 @@ Project overview and requirements can before found [here](https://github.com/CCh
 
 ## Application Design
 
-This application consists of a parser that processes the given CSV files and stores them into a database, a frontend that allows the user to give a part number as input to get back a Deal Registration Group, and a backend that accepts the REST call with the requested part number and queries the database to return the associated Deal Registration Group.
+This application consists of a parser that processes the given CSV files and stores them into a single database table, a frontend that allows the user to give a part number as input to get back a Deal Registration Group, and a backend that accepts the REST call with the requested part number and queries the database to return the associated Deal Registration Group.
 
 #### Technologies Used:
 - CSV parsing and data injection: Python
 - Database: PostgreSQL
-- Backend Server: Node.Js/Express
+- Backend Server: Node.js/Express
 - Frontend web framework: Vue and Carbon
 - Deployment: Docker
 
@@ -46,17 +46,17 @@ The backend server accepts a GET request from the frontend with a part number in
     * A 404 Error is returned with no entires or active entries found response.
 
 - More than one result is returned.
-    * A 500 Internal server error is returned because this, in theory, should never happen.
+    * A 500 Internal server error is returned because this, in theory, should not happen unless bad data gets past the parser.
 
 If the user does not give a valid part number to search, a 422 Unprocessable Entry is returned to the user with an explanation of what the part number should look like.
 
 ### CSV Parser
 
-The CSV parser takes at least one csv file, verifies each row for syntactically correct data, handles identifying and eliminating duplicates, removes any old data existing in the database, and injects the new data into the database.
+The CSV parser takes at least one csv file, verifies each row for syntactically correct data, handles identifying and eliminating duplicates, removes any old data existing in the database, and injects the new data into the database table.
 
 #### Data Verification
 
-Because the data received may not always be completely clean, validation of each column is done on every row.
+Because the data received may not always be clean, validation of each column is done on every row.
 
 - #### Part Number
     * A part number is considered valid if it starts with letters indicating its type (Saas, SW, etc.) followed by the letters PT and any combination of numbers afterwards.
@@ -70,10 +70,10 @@ Because the data received may not always be completely clean, validation of each
         * YYYY-MM-dd-HH.mm.ss.f
     - A row is consided invalid if the End Date or Modified Date are earlier in time compared to their respective Start Date and Add Date.
 - #### Active Flag
-    * An active flag does not have to be defined for each row but if it is it must either be Y or N (case does not matter).
+    * An active flag does not have to be defined for each row but if it is, it must either be Y or N (case does not matter).
     * Each row in the database is stored with an active flag even if it was not supplied in the data given. All rows without a flag present will be stored with an active flag of N/A.
 
-Due to design and development time constraints some assumptions were made about the level of cleanliness the data would be given in.
+Due to design and development time constraints, some assumptions were made about the level of cleanliness the data would be given in.
 
 #### Assumptions:
 1. Because new part types may be added at any time, it is assumed that if the part number is in the correct format string then it should be accepted as a valid part number.
@@ -117,7 +117,7 @@ If all questions aboved are answered with a no, then an error is thrown and the 
 
 Because the database can be updated at any time while the user is able to request part number data from it, data from each given table is only inserted into the database once all valid rows have been collected and duplicate part numbers have been eliminated.
 
-To insert the data, a bulk delete is first permformed on any matching part types(Saas, SW, etc.) that currently exist in the database. This ensures that all data in the database is fully up to date with the most current table received. Once any already existing data has be removed, a bulk insert is performed and all valid rows from the parsed table are added to the database.
+To insert the data, a bulk delete is first permformed on any matching part types (Saas, SW, etc.) that currently exist in the database. This ensures that all data in the database is fully up to date with the most current table received. Once any already existing data has be removed, a bulk insert is performed and all valid rows from the parsed table are added to the database.
 
 Performing bulk deletes and inserts keeps data from being added to the database that is not valid.
 
