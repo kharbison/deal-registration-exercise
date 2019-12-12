@@ -1,9 +1,8 @@
 # Deal Registration Exercise Design Document
 
-This document is an overview of the design approach taken on this project. See the [Install Guide](https://github.com/kharbison/deal-registration-exercise/tree/master/docs/install_guide.md) for instructions on how to install and run the application.
+This document is an overview of the design approach taken on this project. See the [Install Guide](https://github.com/kharbison/deal-registration-exercise/tree/master/README.md) for instructions on how to install and run the application.
 
 ## Requirements
-----
 
 Project overview and requirements can before found [here](https://github.com/CChastang/deal-registration-exercise/issues/1).
 
@@ -13,30 +12,30 @@ Project overview and requirements can before found [here](https://github.com/CCh
 
 
 ## Application Design
-----
+
 This application consists of a parser that processes the given CSV files and stores them into a database, a frontend that allows the user to give a part number as input to get back a Deal Registration Group, and a backend that accepts the REST call with the requested part number and queries the database to return the associated Deal Registration Group.
 
 #### Technologies Used:
 - CSV parsing and data injection: Python
 - Database: PostgreSQL
-- Backend Server: NodeJs/Express
+- Backend Server: Node.Js/Express
 - Frontend web framework: Vue and Carbon
 - Deployment: Docker
 
 #### Component Interactions:
 
-CSV Parser <----> PostgreSQL <----> Server <----> Web Framework
+CSV Parser <----> PostgreSQL <----> Server <----> Web App
 
-### Frontend Web Page
----
-The frontend web page can be accessed by going to http://localhost:8080. Here the user can get the Deal Registrtion Group of a part number by entering the part number into the text field and clicking the 'search' button. If an group is returned, the part number and associated group will be displayed in a table on the screen.
+### Frontend Web App
 
-Successful searches will collect in the table with the most resent search alway appearing at the top. This history data can be cleared at any time by clicking the 'clear history' button.
+The frontend web app can be accessed by going to http://localhost:8080. Here the user can get the Deal Registration Group of a part number by entering the part number into the text field and clicking the 'search' button. If a group is returned, the part number and associated group will be displayed in a table on the screen.
+
+Successful searches will collect in the table with the most resent search always appearing at the top. This history data can be cleared at any time by clicking the 'clear history' button.
 
 If an error is returned from the search, an alert will be displayed for the user with more specific details about why the error might have occured.
 
 ### Backend Server
----
+
 The backend server accepts a GET request from the frontend with a part number included. Once this request is received a query with the part number is sent to database and the result of this query is examinded to determine the correct response needing to be sent to the frontend.
 
 #### Query Responses w/ Actions Taken:
@@ -49,14 +48,14 @@ The backend server accepts a GET request from the frontend with a part number in
 - More than one result is returned.
     * A 500 Internal server error is returned because this, in theory, should never happen.
 
-If the user does not give a valid part number to search, a 422 Unprocessable Entry is returned to the user with an explination of what the part number should look like.
+If the user does not give a valid part number to search, a 422 Unprocessable Entry is returned to the user with an explanation of what the part number should look like.
 
 ### CSV Parser
-----
+
 The CSV parser takes at least one csv file, verifies each row for syntactically correct data, handles identifying and eliminating duplicates, removes any old data existing in the database, and injects the new data into the database.
 
 #### Data Verification
----
+
 Because the data received may not always be completely clean, validation of each column is done on every row.
 
 - #### Part Number
@@ -86,7 +85,7 @@ Due to design and development time constraints some assumptions were made about 
 4. Some date strings have the year 9999 represented as 99 and standard parsing sees this value as 1999 instead of 9999. It is assumed that if there is no active flag or the active flag is set to Y, then 99 should represent 9999.
 
 #### Duplicate Data Handling
----
+
 Once a row has been determined to have valid data, it is added to a temperary list to await database injection. Before being added to this list, the current items are searched to find out if an already validated row contains the same part number as the one trying to be added. If a duplicate part number is found, the two rows go through a check list to determine which row should be used.
 
 In each case below, if the answer is no then the next question is considered otherwise the action underneath the question is taken.
@@ -115,7 +114,7 @@ In each case below, if the answer is no then the next question is considered oth
 If all questions aboved are answered with a no, then an error is thrown and the user is notified that the validity of the duplicates could not be determined and the parser moves on to the next row keeping the old row in the database.
 
 #### Data Injection into the Database
-----
+
 Because the database can be updated at any time while the user is able to request part number data from it, data from each given table is only inserted into the database once all valid rows have been collected and duplicate part numbers have been eliminated.
 
 To insert the data, a bulk delete is first permformed on any matching part types(Saas, SW, etc.) that currently exist in the database. This ensures that all data in the database is fully up to date with the most current table received. Once any already existing data has be removed, a bulk insert is performed and all valid rows from the parsed table are added to the database.
