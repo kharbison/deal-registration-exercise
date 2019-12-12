@@ -1,11 +1,16 @@
 #!/bin/bash
 
+set -e
+
+# get absolute path to scripts dir
+SCRIPTS_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+
 # run python module tests
-cd ../db_loader
+pushd ${SCRIPTS_DIR}/../db_loader
 pytest
-cd -
+popd
 
 # run backend tests
-cd ../backend
+pushd ${SCRIPTS_DIR}/../backend
 npm test
-cd -
+popd

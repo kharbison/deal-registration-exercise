@@ -1,17 +1,22 @@
 #!/bin/bash
 
+set -e
+
+# get absolute path to scripts dir
+SCRIPTS_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+
 # setup python module
-cd ../db_loader
+pushd ${SCRIPTS_DIR}/../db_loader
 pip3 install -r requirements.txt
 pip3 install -e .
-cd -
+popd
 
 # setup backend locally
-cd ../backend
+pushd ${SCRIPTS_DIR}/../backend
 npm install
-cd -
+popd
 
 # setup frontend
-cd ../frontend
+pushd ${SCRIPTS_DIR}/../frontend
 npm install
-cd -
+popd

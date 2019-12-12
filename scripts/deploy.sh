@@ -1,10 +1,15 @@
 #!/bin/bash
 
+set -e
+
+# get absolute path to scripts dir
+SCRIPTS_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+
 # build images
-./build.sh
+${SCRIPTS_DIR}/build.sh
 
 # stop any existing application containers
-./stop.sh
+${SCRIPTS_DIR}/stop.sh
 
 # start application containers
-./start.sh
+${SCRIPTS_DIR}/start.sh

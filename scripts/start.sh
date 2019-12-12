@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # start postgres container
 docker run -d \
     --rm \
