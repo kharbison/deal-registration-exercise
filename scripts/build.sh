@@ -21,7 +21,7 @@ popd
 
 # build frontend image
 pushd ${SCRIPTS_DIR}/../frontend
-docker build -t deal-reg-app-frontend .
+docker build --build-arg VUE_APP_API_URL -t deal-reg-app-frontend .
 popd
 
 # get postgres image

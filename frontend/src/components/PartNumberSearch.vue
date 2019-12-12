@@ -54,7 +54,7 @@ export default {
   methods: {
     getRegGroup: function () {
       axios
-        .get(`http://localhost:3000/deal-registration/mapping/${encodeURIComponent(this.partNum)}`)
+        .get(`${process.env.VUE_APP_API_URL}/deal-registration/mapping/${encodeURIComponent(this.partNum)}`)
         .then(res => {
           this.searchResults.unshift([ res.data.part_num, res.data.deal_reg_group ])
         })

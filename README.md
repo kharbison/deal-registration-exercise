@@ -7,7 +7,7 @@ For a detailed description of the application please see the [Design Doc](https:
 - [Node.js v12](https://nodejs.org/en/)
 - [Docker](https://www.docker.com)
 - [PostgreSQL v12 (_optional_)](https://www.postgresql.org)
-    * Only necessary if not running containerized postgresql image
+    * Only necessary if not running containerized PostgreSQL image
 
 ## Installation
 1. Clone, fork, or download the repository to get the application code.
@@ -17,7 +17,7 @@ For a detailed description of the application please see the [Design Doc](https:
     cd deal-registration-exercise
     ```
 
-2. Run script to install local depencies
+2. Run script to install local dependencies
 
     ```
     ./scripts/local_setup.sh
@@ -29,11 +29,19 @@ Deploying the application will start docker containers of the frontend, backend,
 ```
 ./scripts/deploy.sh
 ```
+### Deploying Remotely
 
-Note: The PostgreSQL container connects to a volume so all data should persist through stopping and starting the containers.
+If you will be accessing the frontend web page from a location different from where your containers are running, you will need to set a `VUE_APP_API_URL` environment variable to the URL of the backend container. This variable is set to `http://localhost:3000` by default so if you are running everything locally, you will not need to set this. Your URL should be connecting to port 3000 and should not have a trailing `/`.
+
+To set this variable and deploy the containers you would run the following:
+
+```
+export VUE_APP_API_URL=http://localhost:3000
+./scripts/deploy.sh
+```
 
 ## Populate Database
-The PostgreSQL url is accepted dynamically so that the `db-loader` can be run with other database servers if necessary. To run the `db-loader` with the containers started use the cmds below.
+The PostgreSQL URL is accepted dynamically so that the `db-loader` can be run with other PostgreSQL database servers if necessary. To run the `db-loader` with the containers started use the cmds below.
 
 1. Set/Create an environment variable named `DEAL_REG_DB_URL` to the PostgreSQL URL. For example the below cmd will set this variable to the URL of the Postgres server if you are running the container locally.
 
@@ -52,15 +60,17 @@ The PostgreSQL url is accepted dynamically so that the `db-loader` can be run wi
 
 To update the database at any point, simply run this cmd again with the new CSV files(s).
 
+Note: The PostgreSQL container connects to a volume so all data should persist through stopping and starting the containers.
+
 ## Usage
 
-To get the corresponding Deal Registration Group of a specified part number, navigate to the URL at which the containers are being served. You shoul be connecting to port 8080.
+To get the corresponding Deal Registration Group of a specified part number, navigate to the URL at which the containers are being served. You should be connecting to port 8080.
 
 For Example, if the containers are running locally, the web page would be located at http://localhost:8080.
 
 Once the page is loaded, simply input a part number and select search to get the corresponding Deal Registration Group of a part number in the database.
 
-# Testing
+## Testing
 
 Tests are set up for the `db-loader` and backend code. To run these tests, you will need to have the containers deployed locally and run the test script.
 
@@ -73,7 +83,7 @@ Note: `local_setup.sh` is required to be executed before the `test.sh` script ca
 The tests currently only support running with a localized PostgreSQL container but the URLS can be changed in the tests themselves if absolutely necessary.
 
 
-# Stopping Deployed Containers
+## Stopping Deployed Containers
 
 Once you have finished executing the app, all containers can be stopped by running the `stop.sh` script.
 
