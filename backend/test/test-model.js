@@ -1,7 +1,7 @@
 const assert = require('chai').assert
 const pgp = require('pg-promise')()
 
-process.env.DEAL_REG_DB_URL = 'postgresql://@localhost:5432/TestDB'
+process.env.DEAL_REG_DB_URL = 'postgresql://postgres@localhost:5432/TestDB'
 
 const model = require('../server/models/deal-registration.js')
 

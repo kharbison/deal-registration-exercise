@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 
-os.environ['DEAL_REG_DB_URL'] = 'postgresql://@localhost:5432/TestDB'
+os.environ['DEAL_REG_DB_URL'] = 'postgresql://postgres@localhost:5432/TestDB'
 
 import deal_reg_db
 from deal_reg_row import DealRegRow
@@ -31,7 +31,7 @@ def test_updateDealRegTableWithRowsFail_InvalidDatabase():
     """Exception should be thrown if invalid connections is set in environment"""
 
     # Set up deal_reg_db file globals
-    os.environ['DEAL_REG_DB_URL'] = 'postgresql://@localhost:5000/TestDB'
+    os.environ['DEAL_REG_DB_URL'] = 'postgresql://postgres@localhost:5000/TestDB'
     deal_reg_db.engine = create_engine(os.getenv('DEAL_REG_DB_URL'))
     deal_reg_db.Session = sessionmaker(bind=deal_reg_db.engine)
 
@@ -47,7 +47,7 @@ def test_updateDealRegTableWithRowsPass_EmptyTblRowAdd():
     """New Row Should be added to empty/missing table"""
 
     # Set up deal_reg_db file globals
-    os.environ['DEAL_REG_DB_URL'] = 'postgresql://@localhost:5432/TestDB'
+    os.environ['DEAL_REG_DB_URL'] = 'postgresql://postgres@localhost:5432/TestDB'
     deal_reg_db.engine = create_engine(os.getenv('DEAL_REG_DB_URL'))
     deal_reg_db.Session = sessionmaker(bind=deal_reg_db.engine)
 
@@ -91,7 +91,7 @@ def test_updateDealRegTableWithRowsPass_ExistingTblRowAdd():
     and new row should be added to table"""
 
     # Set up deal_reg_db file globals
-    os.environ['DEAL_REG_DB_URL'] = 'postgresql://@localhost:5432/TestDB'
+    os.environ['DEAL_REG_DB_URL'] = 'postgresql://postgres@localhost:5432/TestDB'
     deal_reg_db.engine = create_engine(os.getenv('DEAL_REG_DB_URL'))
     deal_reg_db.Session = sessionmaker(bind=deal_reg_db.engine)
 
