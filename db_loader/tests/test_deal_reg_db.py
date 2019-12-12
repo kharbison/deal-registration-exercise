@@ -7,8 +7,8 @@ from sqlalchemy_utils import database_exists, create_database
 
 os.environ['DEAL_REG_DB_URL'] = 'postgresql://postgres@localhost:5432/TestDB'
 
-import deal_reg_db
-from deal_reg_row import DealRegRow
+import db_loader.deal_reg_db as deal_reg_db
+from db_loader.deal_reg_row import DealRegRow
 
 def test_updateDealRegTableWithRowsFail_NoRowsGiven():
     """Index Error should be thrown when empty data is passed in"""

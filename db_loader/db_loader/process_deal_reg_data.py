@@ -5,8 +5,8 @@ import csv
 import re
 from datetime import datetime
 
-from deal_reg_row import DealRegRow
-from deal_reg_db import updateDealRegTableWithRows
+from db_loader.deal_reg_row import DealRegRow
+from db_loader.deal_reg_db import updateDealRegTableWithRows
 
 #region Variables
 #endregion

@@ -1,4 +1,3 @@
-
 class DealRegRow:
 
     def __init__(self, verifiedRow):
