@@ -6,8 +6,13 @@ set -e
 SCRIPTS_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # set up network and volume
-docker network create deal_reg_app_net
-docker volume create postgres_vol
+if ! docker network ls | grep deal_reg_app_net; then
+    docker network create deal_reg_app_net
+fi
+
+if ! docker volume ls | grep postgres_vol; then
+    docker volume create postgres_vol
+fi
 
 # build backend image
 pushd ${SCRIPTS_DIR}/../backend
