@@ -2,8 +2,8 @@
 
 # setup python module
 cd ../db_loader
-pip install -r requirements.txt
-pip install -e .
+pip3 install -r requirements.txt
+pip3 install -e .
 cd -
 
 # setup backend locally
