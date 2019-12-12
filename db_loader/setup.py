@@ -15,7 +15,7 @@ setup(
     install_requires=[
         'sqlalchemy',
         'sqlalchemy_utils',
-        'psycopg2'
+        'psycopg2-binary'
     ],
     extras_require={
         'test': ['pytest']

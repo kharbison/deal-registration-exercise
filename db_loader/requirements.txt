@@ -1,4 +1,4 @@
 sqlalchemy
 sqlalchemy_utils
 pytest
-psycopg2
+psycopg2-binary
